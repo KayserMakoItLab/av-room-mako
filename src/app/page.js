@@ -1,22 +1,46 @@
 'use client'
-import { Environment, Gltf, Grid, Loader, OrbitControls, Plane, Sky } from "@react-three/drei";
+import ControlPanel from "@/components/ControlPanel";
+import { Gltf, Grid, Loader, OrbitControls, Plane, Sky } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
+import './page.css'
+import { IoIosArrowBack } from "react-icons/io";
 
 export default function Home() {
+  const [openControlPanel, setOpenControlPanel] = useState(false)
+
+  const handleControlPanelMenu = () => {
+    console.log('clicked');
+    setOpenControlPanel(true);
+  }
 
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
+    <div style={{ width: "100vw", height: "100vh", position: "fixed" }}>
       <Suspense fallback={<Loader />}>
-        <Canvas
-          camera={{ position: [10, 5, -10], fov: 60 }}
-        >
-          <perspectiveCamera
-            position={[0, 0, 5]} // Set your initial camera position
-          />
+        {!openControlPanel ? (
+          <div className="control-panel-btn">
+            <div
+              className="control-panel-back-btn"
+              onClick={handleControlPanelMenu}
+            >
+              <IoIosArrowBack />
+            </div>
+            <div className="control-panel-btn-text">Control Panel</div>
+          </div>
+        ) : (
+          <ControlPanel open={setOpenControlPanel} />
+        )}
+        <Canvas camera={{ position: [10, 5, -10], fov: 60 }}>
+          <perspectiveCamera position={[0, 0, 5]} />
           <ambientLight intensity={3} />
-          <OrbitControls dampingFactor={1} screenSpacePanning minPolarAngle={0} maxPolarAngle={1.5} minDistance={1} maxDistance={15}/>
-          {/* <Environment  background /> */}
+          <OrbitControls
+            dampingFactor={1}
+            screenSpacePanning
+            minPolarAngle={0}
+            maxPolarAngle={1.65}
+            minDistance={1}
+            maxDistance={15}
+          />
           <Sky />
           <Gltf
             src="/assets/rooms/room1.gltf"
